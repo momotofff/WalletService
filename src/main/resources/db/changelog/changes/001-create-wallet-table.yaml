@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 001-create-wallet-table
-      author: dev
+      id: create-wallets-table
+      author: developer
       changes:
         - createTable:
             tableName: wallets
@@ -14,10 +14,15 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: balance
-                  type: BIGINT
+                  type: DECIMAL(19,2)
                   constraints:
                     nullable: false
               - column:
                   name: version
                   type: BIGINT
-                  defaultValue: 0
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
