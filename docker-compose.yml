@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -17,11 +19,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
-    restart: on-failure:3
-    command: >
-      postgres 
-      -c max_connections=100 
-      -c shared_buffers=128MB
+    restart: unless-stopped
 
   wallet-service:
     build: .
@@ -30,15 +28,44 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      # Основные настройки
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/walletdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+      # LIQUIBASE НАСТРОЙКИ
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:/db/changelog/db.changelog-master.yaml
+      SPRING_LIQUIBASE_DEFAULT_SCHEMA: public
+
       SERVER_PORT: 8080
-      SPRING_PROFILES_ACTIVE: docker  # Активируем профиль docker
+      SPRING_PROFILES_ACTIVE: docker
+
+      # Оптимизация для высокой нагрузки
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 20
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: 10
+      SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: 30000
+
+      # Tomcat настройки
+      SERVER_TOMCAT_MAX_THREADS: 200
+      SERVER_TOMCAT_MIN_SPARE_THREADS: 20
+
+      # Отладка
+      LOGGING_LEVEL_COM_EXAMPLE_WALLET: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: WARN
+      LOGGING_LEVEL_ORG_HIBERNATE_SQL: WARN
+      LOGGING_LEVEL_ORG_LIQUIBASE: DEBUG  # Для отладки Liquibase
     ports:
       - "8081:8080"
     restart: unless-stopped
+    # Убрал mem_limit/mem_reservation - используем стандартные ограничения
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
 
 volumes:
   postgres_data:

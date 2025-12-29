@@ -1,16 +1,17 @@
-# Build stage
-FROM maven:3.8.6-eclipse-temurin-17 AS build
-WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-COPY src ./src
-RUN mvn clean package -DskipTests
+FROM openjdk:17-jdk-slim
 
-# Runtime stage
-FROM eclipse-temurin:17-jre-alpine
+# Установка ожидания для БД (опционально)
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
-COPY --from=build /app/target/*.jar app.jar
+
+# Копируем JAR
+COPY target/*.jar app.jar
+
+# Копируем конфигурацию
+COPY src/main/resources/application-docker.yml ./config/
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+# Запускаем с профилем docker
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.location=classpath:/,classpath:/config/", "--spring.profiles.active=docker"]
