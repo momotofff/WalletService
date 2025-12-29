@@ -10,17 +10,14 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "wallets")
-public class Wallet {
-
+public class Wallet
+{
     @Id
     @Column(columnDefinition = "UUID", nullable = false, updatable = false)
     private UUID id;
 
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal balance = BigDecimal.ZERO;
-
-    @Version
-    private Long version = 0L;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -59,8 +56,6 @@ public class Wallet {
         }
     }
 
-    public Long getVersion() { return version; }
-    public void setVersion(Long version) { this.version = version; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

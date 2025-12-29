@@ -10,9 +10,6 @@ import com.example.wallet.repository.WalletRepository;
 import com.example.wallet.service.WalletService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -30,18 +27,12 @@ public class WalletServiceImpl implements WalletService
     }
 
     @Override
-    @Retryable(
-            retryFor = OptimisticLockingFailureException.class,
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 50, multiplier = 2, maxDelay = 1000)
-    )
     @Transactional
-    public WalletResponse processTransaction(WalletRequest request)
-    {
+    public WalletResponse processTransaction(WalletRequest request) {
         log.debug("Processing transaction: walletId={}, operation={}, amount={}",
                   request.getWalletId(), request.getOperationType(), request.getAmount());
 
-        // Используем пессимистичную блокировку для конкурентного доступа
+        // Используем пессимистичную блокировку SELECT FOR UPDATE
         Wallet wallet = walletRepository.findByIdWithLock(request.getWalletId())
                 .orElseGet(() -> {
                     if (request.getOperationType() == OperationType.DEPOSIT) {

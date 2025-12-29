@@ -5,26 +5,40 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres123}
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:20}
+      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:10}
+      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT:30000}
+      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT:600000}
+      max-lifetime: ${SPRING_DATASOURCE_HIKARI_MAX_LIFETIME:1800000}
+      pool-name: WalletHikariPool
   
   jpa:
     hibernate:
-      ddl-auto: create-drop  # Используем create-drop для теста
+      ddl-auto: validate    # Используем create-drop для теста
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        jdbc:
+          batch_size: 20
+          order_inserts: true
+          order_updates: true
   
   liquibase:
-    enabled: true
+    enabled: ${SPRING_LIQUIBASE_ENABLED:true}
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
 
 server:
   port: ${SERVER_PORT:8080}
+  tomcat:
+    max-threads: ${SERVER_TOMCAT_MAX_THREADS:100}
+    max-connections: ${SERVER_TOMCAT_MAX_CONNECTIONS:10000}
+    accept-count: ${SERVER_TOMCAT_ACCEPT_COUNT:100}
+    connection-timeout: 20000
 
 logging:
   level:
-    com.wallet: DEBUG
-    org.springframework: INFO
-    org.hibernate.SQL: DEBUG
+    com.example.wallet: INFO
+    org.springframework: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
