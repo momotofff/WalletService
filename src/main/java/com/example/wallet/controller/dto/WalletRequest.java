@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class WalletRequest {
-
+public class WalletRequest
+{
     @NotNull(message = "walletId is required")
     private final UUID walletId;
 
@@ -26,7 +26,8 @@ public class WalletRequest {
     public WalletRequest(
             @JsonProperty("walletId") UUID walletId,
             @JsonProperty("operationType") OperationType operationType,
-            @JsonProperty("amount") BigDecimal amount) {
+            @JsonProperty("amount") BigDecimal amount)
+    {
         this.walletId = walletId;
         this.operationType = operationType;
         this.amount = amount;

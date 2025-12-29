@@ -5,14 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class WalletResponse {
+public class WalletResponse
+{
     private final UUID walletId;
     private final BigDecimal balance;
 
     @JsonCreator
     public WalletResponse(
             @JsonProperty("walletId") UUID walletId,
-            @JsonProperty("balance") BigDecimal balance) {
+            @JsonProperty("balance") BigDecimal balance)
+    {
         this.walletId = walletId;
         this.balance = balance;
     }

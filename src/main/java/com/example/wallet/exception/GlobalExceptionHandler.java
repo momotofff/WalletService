@@ -14,7 +14,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler
+{
 
     @ExceptionHandler(WalletNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleWalletNotFound(
@@ -31,7 +32,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InsufficientFundsException.class)
     public ResponseEntity<ErrorResponse> handleInsufficientFunds(
-            InsufficientFundsException ex, HttpServletRequest request) {
+            InsufficientFundsException ex, HttpServletRequest request)
+    {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -44,7 +46,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
     public ResponseEntity<ErrorResponse> handleInvalidRequest(
-            InvalidRequestException ex, HttpServletRequest request) {
+            InvalidRequestException ex, HttpServletRequest request)
+    {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -57,7 +60,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(
-            MethodArgumentNotValidException ex, HttpServletRequest request) {
+            MethodArgumentNotValidException ex, HttpServletRequest request)
+    {
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .findFirst()
@@ -75,7 +79,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleInvalidJson(
-            HttpMessageNotReadableException ex, HttpServletRequest request) {
+            HttpMessageNotReadableException ex, HttpServletRequest request)
+    {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -88,7 +93,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
-            MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+            MethodArgumentTypeMismatchException ex, HttpServletRequest request)
+    {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -101,7 +107,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolation(
-            ConstraintViolationException ex, HttpServletRequest request) {
+            ConstraintViolationException ex, HttpServletRequest request)
+    {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -114,7 +121,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OptimisticLockingFailureException.class)
     public ResponseEntity<ErrorResponse> handleOptimisticLocking(
-            OptimisticLockingFailureException ex, HttpServletRequest request) {
+            OptimisticLockingFailureException ex, HttpServletRequest request)
+    {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),

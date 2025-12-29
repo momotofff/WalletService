@@ -10,7 +10,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
-public class WalletController {
+public class WalletController
+{
 
     private final WalletService walletService;
 
@@ -19,13 +20,15 @@ public class WalletController {
     }
 
     @PostMapping("/wallet")
-    public ResponseEntity<WalletResponse> processTransaction(@Valid @RequestBody WalletRequest request) {
+    public ResponseEntity<WalletResponse> processTransaction(@Valid @RequestBody WalletRequest request)
+    {
         WalletResponse response = walletService.processTransaction(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/wallets/{walletId}")
-    public ResponseEntity<WalletResponse> getBalance(@PathVariable UUID walletId) {
+    public ResponseEntity<WalletResponse> getBalance(@PathVariable UUID walletId)
+    {
         WalletResponse response = walletService.getBalance(walletId);
         return ResponseEntity.ok(response);
     }

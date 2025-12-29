@@ -30,14 +30,12 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      # ТОЧНО такие имена переменных:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/walletdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres123
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SERVER_PORT: 8080
-      # УБЕРАЮ профиль docker пока что:
-      # SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: docker  # Активируем профиль docker
     ports:
       - "8081:8080"
     restart: unless-stopped

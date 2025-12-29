@@ -9,13 +9,15 @@ import org.springframework.context.annotation.Profile;
 import javax.sql.DataSource;
 
 @Configuration
-public class DatabaseConfig {
+public class DatabaseConfig
+{
 
     @Value("${spring.liquibase.change-log}")
     private String changeLogPath;
 
     @Bean
-    public SpringLiquibase liquibase(DataSource dataSource) {
+    public SpringLiquibase liquibase(DataSource dataSource)
+    {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(changeLogPath);

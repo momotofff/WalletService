@@ -10,8 +10,22 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate  # Измените с create-drop на validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+  liquibase:
+    enabled: true
+    # Используем путь, который работает внутри JAR
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.wallet: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG

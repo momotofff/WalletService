@@ -19,12 +19,13 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
-public class WalletServiceImpl implements WalletService {
-
+public class WalletServiceImpl implements WalletService
+{
     private static final Logger log = LoggerFactory.getLogger(WalletServiceImpl.class);
     private final WalletRepository walletRepository;
 
-    public WalletServiceImpl(WalletRepository walletRepository) {
+    public WalletServiceImpl(WalletRepository walletRepository)
+    {
         this.walletRepository = walletRepository;
     }
 
@@ -35,7 +36,8 @@ public class WalletServiceImpl implements WalletService {
             backoff = @Backoff(delay = 50, multiplier = 2, maxDelay = 1000)
     )
     @Transactional
-    public WalletResponse processTransaction(WalletRequest request) {
+    public WalletResponse processTransaction(WalletRequest request)
+    {
         log.debug("Processing transaction: walletId={}, operation={}, amount={}",
                   request.getWalletId(), request.getOperationType(), request.getAmount());
 
@@ -54,11 +56,14 @@ public class WalletServiceImpl implements WalletService {
 
         // Выполняем операцию
         BigDecimal newBalance;
-        if (request.getOperationType() == OperationType.DEPOSIT) {
+        if (request.getOperationType() == OperationType.DEPOSIT)
+        {
             newBalance = wallet.getBalance().add(request.getAmount());
             log.debug("Deposit: walletId={}, oldBalance={}, amount={}, newBalance={}",
                       wallet.getId(), wallet.getBalance(), request.getAmount(), newBalance);
-        } else {
+        }
+        else
+        {
             // WITHDRAW
             if (wallet.getBalance().compareTo(request.getAmount()) < 0) {
                 log.warn("Insufficient funds: walletId={}, balance={}, required={}",
@@ -68,6 +73,7 @@ public class WalletServiceImpl implements WalletService {
                                       wallet.getBalance(), request.getAmount())
                 );
             }
+
             newBalance = wallet.getBalance().subtract(request.getAmount());
             log.debug("Withdraw: walletId={}, oldBalance={}, amount={}, newBalance={}",
                       wallet.getId(), wallet.getBalance(), request.getAmount(), newBalance);
@@ -81,7 +87,8 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional(readOnly = true)
-    public WalletResponse getBalance(UUID walletId) {
+    public WalletResponse getBalance(UUID walletId)
+    {
         log.debug("Getting balance for walletId={}", walletId);
 
         Wallet wallet = walletRepository.findById(walletId)
